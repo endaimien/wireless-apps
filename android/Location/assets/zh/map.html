@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+        <title>Map</title>
+        <script src="http://ditu.google.cn/maps?hl=zh-CN&amp;file=api&amp;v=2&amp;sensor=true&amp;key=ABQIAAAANv4vRQVBvuMJA6tyhpEVYhT2yXp_ZAY8_ufC3CFXhHIE1NvwkxS5EvCTylQAqE2076RlFUaSV7w-gA" type="text/javascript"></script>
+        <script type="text/javascript">
+            var g_map = null;
+            var g_marker = null;
+
+            function getParam(_param) {
+                var query = location.search.substring(1);
+                var pairs = query.split("&");
+                for(var i=0;i<pairs.length;i++) {
+                    var pos = pairs[i].indexOf("=");
+                    if(pos==-1)
+                        continue;
+                    var argname=pairs[i].substring(0,pos);
+                    if(argname==_param) {
+                        var value=pairs[i].substring(pos+1).replace(/\+/g,' ');
+                        return decodeURIComponent(value);
+                    }
+                }
+                return null;
+            }
+
+            function initialize() {
+                d = document.getElementById("map_canvas");
+                sw = getParam("w");
+                sh = getParam("h");
+                if (sw!=null && sh!=null) {
+                    w = parseInt(sw);
+                    h = parseInt(sh);
+                    d.style.width = w + "px";
+                    d.style.height = h + "px";
+                }
+                lat = parseFloat(getParam("lat"));
+                lng = parseFloat(getParam("lng"));
+                map = new GMap2(d);
+                map.setCenter(new GLatLng(lat, lng), 14);
+                setMarker(lat, lng);
+            }
+
+            function setMarker(lat, lng) {
+                if (g_marker!=null)
+                    map.removeOverlay(g_marker);
+                ll = new GLatLng(lat, lng);
+                g_marker = new GMarker(ll);
+                map.addOverlay(g_marker);
+                map.panTo(ll);
+            }
+        </script>
+    </head>
+    <body onload="initialize()" onunload="GUnload()" style="margin: 0px; padding: 0px">
+        <div id="map_canvas" style="width: 260px; height: 300px"></div>
+    </body>
+</html>
